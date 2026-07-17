@@ -16,6 +16,9 @@ data/
 # Orchestrator 虚拟环境（M3）
 orchestrator/.venv/
 
+# crawl4more Skill 虚拟环境
+crawl4more-skill/.venv/
+
 # 前端构建产物（M4）
 frontend/node_modules/
 frontend/dist/

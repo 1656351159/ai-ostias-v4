@@ -88,7 +88,8 @@ Prompt 指引 + Adapter 审计核对（Session 中 exec 命令行必须含 `run.
 
 实证：符号链接 `agent-workspace/crawl4more-skill -> ../crawl4more-skill` 被 OpenClaw
 拒绝（read 工具报错 `Symlink escapes sandbox root`，Session 审计留存）。
-改为 `cp -R` 副本后 read/exec 全部通过。Skill 变更需重新同步副本；
+改为 `cp -R` 副本后 read/exec 全部通过。**Skill 改动后须运行 `v4/scripts/sync-skill.sh`
+重新同步副本**（rsync 优先、cp -R 兜底，排除 .venv/.env/__pycache__/*.db）；
 `preflight` 的 `skill_presence` 检查会校验 run.py/SKILL.md 就位且 realpath 不逃逸。
 
 ## 运行

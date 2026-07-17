@@ -177,6 +177,10 @@ class AgentResultContractTests(unittest.TestCase):
         normalized = validate_agent_result(skill_payload(status="paused"), self.task)
         self.assertEqual(normalized["status"], "paused")
 
+    def test_cancelled_is_a_valid_skill_status(self):
+        normalized = validate_agent_result(skill_payload(status="cancelled"), self.task)
+        self.assertEqual(normalized["status"], "cancelled")
+
     def test_unknown_status_is_rejected(self):
         with self.assertRaises(ValueError):
             validate_agent_result(skill_payload(status="running"), self.task)
@@ -225,6 +229,14 @@ class SubmitBranchTests(unittest.TestCase):
         result, _ = self.submit_with_payload(json.dumps(payload))
         self.assertEqual(result.status, "failed")
         self.assertEqual(result.error.code, "skill_execution_failed")
+
+    def test_skill_cancelled_maps_to_cancelled_not_failed(self):
+        payload = skill_payload(status="cancelled", error="cancelled by user")
+        result, _ = self.submit_with_payload(json.dumps(payload))
+        self.assertEqual(result.status, "cancelled")
+        self.assertEqual(result.error.code, "skill_cancelled")
+        self.assertEqual(result.result["status"], "cancelled")
+        self.assertEqual(result.result["job_id"], "job-1")
 
     def test_unparseable_reply_maps_to_invalid_agent_result(self):
         result, _ = self.submit_with_payload("no json here")
@@ -300,6 +312,29 @@ class SubmitBranchTests(unittest.TestCase):
             )
             result = adapter.submit(task)
             self.assertEqual(result.status, "completed")
+            self.assertTrue(result.result["db_check"]["found"])
+
+    def test_db_cancelled_status_agrees_with_skill_result(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "crawler.db"
+            connection = sqlite3.connect(str(db_path))
+            connection.execute(
+                "CREATE TABLE crawl_jobs (job_uuid TEXT, status TEXT, processed_pages INTEGER)"
+            )
+            connection.execute(
+                "INSERT INTO crawl_jobs VALUES ('job-1', 'cancelled', 1)"
+            )
+            connection.commit()
+            connection.close()
+            task = json.loads(json.dumps(self.task))
+            task["input"]["db_path"] = str(db_path)
+            adapter = QueueAdapter(
+                [completed(rpc_wrapper(json.dumps(skill_payload(status="cancelled"))))],
+                preflight=strict_preflight(),
+            )
+            result = adapter.submit(task)
+            self.assertEqual(result.status, "cancelled")
+            self.assertEqual(result.error.code, "skill_cancelled")
             self.assertTrue(result.result["db_check"]["found"])
 
 

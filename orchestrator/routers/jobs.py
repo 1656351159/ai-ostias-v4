@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 SKILL_OUTPUT_SCHEMA = {
     "job_id": "string",
-    "status": "completed|failed|paused",
+    "status": "completed|failed|paused|cancelled",
     "processed_pages": "integer",
     "extracted_count": "integer",
     "failed_subtasks": "integer",

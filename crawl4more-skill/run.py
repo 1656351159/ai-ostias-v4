@@ -164,9 +164,16 @@ def main() -> int:
                         help="只创建 Job 和子任务后退出，不运行调度器")
     parser.add_argument("--overall-timeout", type=int, default=600,
                         help="整体超时秒数，超时强停调度器（默认 600）")
+    parser.add_argument("--extraction-instruction", default=None,
+                        help="覆盖默认 LLM 抽取指令（默认用 models/extraction_schema.py 的"
+                             " get_default_extraction_instruction()；仅真实爬取模式生效）")
     args = parser.parse_args()
 
     setup_logging()
+
+    # 抽取指令覆盖：通过环境变量传给同进程的 CrawlerWorker（最小改动，不改 Job 表结构）
+    if args.extraction_instruction:
+        os.environ["CRAWLER_EXTRACTION_INSTRUCTION"] = args.extraction_instruction
 
     db_path = resolve_db_path(args.db_path)
     logger.info("数据库路径: %s", db_path)

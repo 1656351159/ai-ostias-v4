@@ -7,6 +7,8 @@ V4 相对 V3 的契约变化（技术手册 5.2）：
 - output_schema 对齐 Skill 输出契约（job_id/status/processed_pages/
   extracted_count/failed_subtasks/error）。
 - 新增稳定错误码 skill_execution_failed（Skill 侧失败/暂停/结果不可解析）。
+- 新增稳定错误码 skill_cancelled（用户取消：Skill 如实上报 cancelled，
+  RuntimeResult.status="cancelled"，不再归入 failed）。
 - 网络访问仍需 allow_network: true 显式声明；爬取 Skill 强制要求 true。
 """
 
@@ -24,7 +26,8 @@ NETWORK_TOOL_NAMES = {"web_search", "web_fetch", "browser"}
 REGISTERED_SKILLS = {"crawl4more"}
 
 # Skill 输出契约（SKILL.md）：stdout 末行单行 JSON 的合法 status 取值。
-SKILL_RESULT_STATUSES = ("completed", "failed", "paused")
+# cancelled：用户在 DB 侧取消 Job 后 Skill 如实上报（语义为"已取消"，非"失败"）。
+SKILL_RESULT_STATUSES = ("completed", "failed", "paused", "cancelled")
 
 # output_schema 必须声明的 Skill 输出字段。
 SKILL_OUTPUT_FIELDS = (
@@ -44,6 +47,7 @@ ERROR_TIMEOUT = "timeout"
 ERROR_AGENT_EXECUTION_FAILED = "agent_execution_failed"
 ERROR_INVALID_AGENT_RESULT = "invalid_agent_result"
 ERROR_SKILL_EXECUTION_FAILED = "skill_execution_failed"  # V4 新增
+ERROR_SKILL_CANCELLED = "skill_cancelled"  # 用户取消：终态但语义区别于失败
 
 
 def utc_now() -> str:

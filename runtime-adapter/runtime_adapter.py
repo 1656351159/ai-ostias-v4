@@ -30,6 +30,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 from models import (
     ERROR_INVALID_AGENT_RESULT,
+    ERROR_SKILL_CANCELLED,
     ERROR_SKILL_EXECUTION_FAILED,
     NETWORK_TOOL_NAMES,
     RuntimeErrorInfo,
@@ -767,6 +768,35 @@ class RuntimeAdapter:
                         % (db_check.get("status"), normalized["status"]),
                         {"db_check": db_check},
                     )
+
+            if normalized["status"] == "cancelled":
+                # 用户取消：终态但不计失败。RuntimeResult.status="cancelled"，
+                # 附带 skill_cancelled 错误码供上游/前端区分语义（DB 事实源同为 cancelled）。
+                result_payload = dict(normalized)
+                result_payload["used_tools"] = turn.used_tools
+                result_payload["db_check"] = db_check
+                result_payload["session_file"] = turn.session_file
+                return RuntimeResult(
+                    task_id=validated_task["task_id"],
+                    runtime="openclaw",
+                    agent_id=self.agent_id or "unknown",
+                    session_id=actual_session_id,
+                    status="cancelled",
+                    started_at=started_at,
+                    finished_at=utc_now(),
+                    duration_ms=int((time.monotonic() - started) * 1000),
+                    result=result_payload,
+                    error=RuntimeErrorInfo(
+                        ERROR_SKILL_CANCELLED,
+                        "Skill reported status cancelled%s"
+                        % (
+                            (": %s" % normalized["error"])
+                            if normalized.get("error")
+                            else ""
+                        ),
+                        {"skill_result": normalized, "db_check": db_check},
+                    ),
+                )
 
             if normalized["status"] != "completed":
                 raise OpenClawAdapterError(

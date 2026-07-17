@@ -42,6 +42,7 @@ USE_MOCK_CRAWLER=true python run.py --start-url https://example.com --max-pages 
 | `--job-id` | 否 | 自动生成 uuid | 指定 job_uuid（Orchestrator 预写库时对齐用） |
 | `--enqueue-only` | 否 | 关闭 | 只创建 Job 和子任务后退出，不运行调度器 |
 | `--overall-timeout` | 否 | `600` | 整体超时秒数，超时强停调度器 |
+| `--extraction-instruction` | 否 | 内置默认指令 | 覆盖 LLM 抽取指令（默认取 `models/extraction_schema.py` 的 `get_default_extraction_instruction()`；仅真实爬取模式生效，mock 模式下仅参数通路可用） |
 
 运行中每 10 秒向 stderr 打印一次进度；环境变量从 `.env` 加载（见 `.env.example`）。
 
@@ -50,8 +51,10 @@ USE_MOCK_CRAWLER=true python run.py --start-url https://example.com --max-pages 
 **stdout 最后一行**为单行 JSON 摘要，供上层 Adapter 解析：
 
 ```json
-{"job_id": "uuid", "status": "completed|failed|paused", "processed_pages": 12, "extracted_count": 8, "failed_subtasks": 1, "error": null}
+{"job_id": "uuid", "status": "completed|failed|paused|cancelled", "processed_pages": 12, "extracted_count": 8, "failed_subtasks": 1, "error": null}
 ```
+
+- `status`：`cancelled` 表示 Job 被用户在 DB 侧取消（语义为"已取消"而非"失败"，Adapter 会区分上报）
 
 - `processed_pages`：Job 已处理页数（取自 `crawl_jobs.processed_pages`）
 - `extracted_count`：有 `extracted_data` 的已完成子任务数（从 DB 统计）

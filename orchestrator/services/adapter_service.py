@@ -80,7 +80,7 @@ class _TaskTable:
         with self._lock:
             self._records[job_id] = {
                 "job_id": job_id,
-                "state": "submitted",  # submitted/running/done/failed
+                "state": "submitted",  # submitted/running/done/failed/cancelled
                 "submitted_at": datetime.now().isoformat(),
                 "finished_at": None,
                 "task": task,
@@ -98,7 +98,15 @@ class _TaskTable:
         with self._lock:
             rec = self._records.get(job_id)
             if rec:
-                rec["state"] = "done" if result_dict.get("status") == "completed" else "failed"
+                # cancelled 是终态但保留"已取消"语义（区别于 done/failed），
+                # 前端 adapter 徽标据此区分展示。
+                adapter_status = result_dict.get("status")
+                if adapter_status == "completed":
+                    rec["state"] = "done"
+                elif adapter_status == "cancelled":
+                    rec["state"] = "cancelled"
+                else:
+                    rec["state"] = "failed"
                 rec["finished_at"] = datetime.now().isoformat()
                 rec["result"] = result_dict
                 err = result_dict.get("error")

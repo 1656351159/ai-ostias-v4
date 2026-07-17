@@ -118,11 +118,17 @@ class CrawlerWorker:
                 max_tokens=8192,  # 增加输出 token 限制
             )
 
+            # 抽取指令：run.py --extraction-instruction 经环境变量覆盖，否则用默认
+            instruction = (
+                os.getenv("CRAWLER_EXTRACTION_INSTRUCTION", "").strip()
+                or get_default_extraction_instruction()
+            )
+
             self.extraction_strategy = LLMExtractionStrategy(
                 llm_config=crawl4ai_llm,
                 schema=UnifiedExtractionData.model_json_schema(),
                 extraction_type="schema",
-                instruction=get_default_extraction_instruction(),
+                instruction=instruction,
                 chunk_token_threshold=1024,  # 减小 chunk 大小，避免单块过大
                 apply_chunking=True,
                 input_format="markdown",
