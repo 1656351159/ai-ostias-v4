@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-07-17T08:44:43.797022Z",
+  "openclaw_version": "2026.7.1",
+  "test_mode": "gateway",
+  "transport": "rpc",
+  "agent_id": "researcher-v4",
+  "gateway_url": "ws://127.0.0.1:18789",
+  "gateway_auth_mode": "token",
+  "tests": [
+    {
+      "name": "cli_executable",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 4865,
+      "message": "OpenClaw CLI is executable"
+    },
+    {
+      "name": "cli_version",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "OpenClaw 2026.7.1"
+    },
+    {
+      "name": "agent_exists",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "Agent researcher-v4 is configured"
+    },
+    {
+      "name": "model_provider",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "Agent model is configured (custom-api-kimi-com/kimi-for-coding-highspeed)"
+    },
+    {
+      "name": "gateway_connection",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "Gateway is reachable"
+    },
+    {
+      "name": "gateway_rpc",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "Gateway RPC probe succeeded"
+    },
+    {
+      "name": "port_conflict",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "Configured listener belongs to the reachable Gateway"
+    },
+    {
+      "name": "tool_policy",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "Exact baseline allowlist with controlled exec only"
+    },
+    {
+      "name": "skill_presence",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 0,
+      "message": "crawl4more Skill is deployed in the Agent workspace"
+    }
+  ],
+  "overall_result": "passed"
+}

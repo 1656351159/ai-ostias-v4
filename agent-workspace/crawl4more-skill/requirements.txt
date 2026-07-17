@@ -1,0 +1,19 @@
+# ============================================
+# crawl4more Skill - 依赖声明
+# ============================================
+
+# 爬虫引擎（真实模式；mock 模式不强制）
+crawl4ai>=0.3.0
+
+# 异步 HTTP（Crawl4AI 依赖）
+aiohttp>=3.9.0
+
+# 环境变量加载
+python-dotenv>=1.0.0
+
+# LLM 抽取 schema
+pydantic>=2.0.0
+
+# LLM 适配层（代码实际 import）
+langchain-openai
+langchain-anthropic

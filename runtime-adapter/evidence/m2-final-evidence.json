@@ -1,0 +1,142 @@
+{
+  "generated_at": "2026-07-17T08:52:06.805237Z",
+  "openclaw_version": "2026.7.1",
+  "test_mode": "gateway",
+  "transport": "rpc",
+  "agent_id": "researcher-v4",
+  "gateway_url": "ws://127.0.0.1:18789",
+  "gateway_auth_mode": "token",
+  "tests": [
+    {
+      "name": "environment_preflight",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 5124,
+      "message": "CLI, Agent, model, Gateway and Skill deployment are available"
+    },
+    {
+      "name": "skill_wiring",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 48966,
+      "message": "Session audit proves exec(run.py); DB job completed; RuntimeResult completed",
+      "details": {
+        "job_id": "m2-c7845c7570d8",
+        "processed_pages": 2,
+        "exec_commands": [
+          "USE_MOCK_CRAWLER=true /usr/bin/python3 crawl4more-skill/run.py --start-url https://example.com --max-pages 2 --priority 0 --slice-timeout 10 --db-path /Users/boom/Documents/kimi/Workspaces/aios/v4/runtime-adapter/evidence/skill-wiring-m2-c7845c7570d8.db --job-id m2-c7845c7570d8 --overall-timeout 600",
+          "/usr/bin/python3 crawl4more-skill/run.py --start-url https://example.com --max-pages 2 --priority 0 --slice-timeout 10 --db-path /Users/boom/Documents/kimi/Workspaces/aios/v4/runtime-adapter/evidence/skill-wiring-m2-c7845c7570d8.db --job-id m2-c7845c7570d8 --overall-timeout 600"
+        ],
+        "db_check": {
+          "db_path": "/Users/boom/Documents/kimi/Workspaces/aios/v4/runtime-adapter/evidence/skill-wiring-m2-c7845c7570d8.db",
+          "job_id": "m2-c7845c7570d8",
+          "found": true,
+          "status": "completed",
+          "processed_pages": 2
+        }
+      }
+    },
+    {
+      "name": "session_continuity",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 7888,
+      "message": "The same Session recalled a random marker"
+    },
+    {
+      "name": "session_isolation",
+      "status": "passed",
+      "source": "real",
+      "duration_ms": 14258,
+      "message": "Two random markers remained isolated"
+    },
+    {
+      "name": "error_normalization",
+      "status": "passed",
+      "source": "mixed",
+      "duration_ms": 7471,
+      "message": "Unified error cases passed",
+      "details": {
+        "subchecks": [
+          {
+            "name": "nonexistent_agent",
+            "status": "passed",
+            "source": "real"
+          },
+          {
+            "name": "gateway_unavailable_no_fallback",
+            "status": "passed",
+            "source": "real"
+          },
+          {
+            "name": "timeout",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "invalid_json",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "tool_call_failure",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "gateway_rpc_error",
+            "status": "passed",
+            "source": "simulated"
+          }
+        ]
+      }
+    },
+    {
+      "name": "security",
+      "status": "passed",
+      "source": "mixed",
+      "duration_ms": 4012,
+      "message": "Security checks passed",
+      "details": {
+        "subchecks": [
+          {
+            "name": "no_shell_interpolation",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "message_file_channel",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "temporary_file_cleanup",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "secret_redaction",
+            "status": "passed",
+            "source": "simulated"
+          },
+          {
+            "name": "dangerous_tools_disabled_by_default",
+            "status": "passed",
+            "source": "real"
+          },
+          {
+            "name": "prompt_cannot_expand_allowed_tools",
+            "status": "passed",
+            "source": "real"
+          },
+          {
+            "name": "prompt_cannot_declare_new_skill",
+            "status": "passed",
+            "source": "real"
+          }
+        ]
+      }
+    }
+  ],
+  "overall_result": "passed"
+}

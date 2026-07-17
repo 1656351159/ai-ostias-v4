@@ -1,0 +1,29 @@
+{
+  "task_id": "crawl-m2-001",
+  "task_type": "web_intelligence_crawl",
+  "goal": "通过 crawl4more Skill 对目标站点执行限量 mock 爬取并回收归一化结果",
+  "input": {
+    "start_url": "https://example.com",
+    "extra_urls": [],
+    "max_pages": 2,
+    "priority": 0,
+    "slice_timeout": 10,
+    "db_path": null,
+    "job_id": null,
+    "mock_crawler": true
+  },
+  "constraints": {
+    "skill": "crawl4more",
+    "allow_network": true,
+    "allowed_tools": ["read", "exec"],
+    "timeout_seconds": 600
+  },
+  "output_schema": {
+    "job_id": "string",
+    "status": "completed|failed|paused",
+    "processed_pages": "integer",
+    "extracted_count": "integer",
+    "failed_subtasks": "integer",
+    "error": "string|null"
+  }
+}
