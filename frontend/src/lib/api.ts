@@ -177,7 +177,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     } catch {
       // 忽略非 JSON 错误体
     }
-    throw new ApiError(`请求失败 HTTP ${res.status}${detail}`, res.status)
+    throw new ApiError(
+      `请求失败 HTTP ${res.status}${detail}` +
+        (res.status >= 500 && !detail
+          ? '（可能是后端服务未启动，请先在终端运行：cd v4/orchestrator && .venv/bin/uvicorn main:app --port 8000）'
+          : ''),
+      res.status,
+    )
   }
   return (await res.json()) as T
 }
