@@ -274,7 +274,7 @@ V3 demo 中 `runtime_demo.py` 是验证器替身，V4 需要正式的轻量 Orch
 
 ### 8.3 技术选型
 
-Vue 3 + Element Plus + Pinia + Vue Flow（流程编排画布）；轮询用 `setInterval` + 可配置时间片；构建 Vite。与后端 REST 对接，不引入 WebSocket（V4 轮询即可满足，留作后续优化项）。
+~~Vue 3 + Element Plus~~ **实际落地（M4 变更）**：React 19 + TypeScript + Vite 7 + Tailwind CSS + shadcn/ui（采用本机 webapp 构建标准栈）；轮询用自定义 Hook（5s 可配）；与后端 REST 对接（Vite dev proxy `/api → localhost:8000`），不引入 WebSocket（留作后续优化项）。流程编排画布（Vue Flow 或 React Flow）与新手指导弹窗按决策 3 后置。
 
 ---
 
@@ -305,10 +305,10 @@ Vue 3 + Element Plus + Pinia + Vue Flow（流程编排画布）；轮询用 `set
 | 里程碑 | 内容 | 预估 |
 |---|---|---|
 | M1 Skill 化 | 按 4.1/4.2 整理目录，完成 4.3 全部 8 项改造，`run.py` 本地跑通 | 1–2 天 ✅ **已完成**（mock 模式端到端验证通过，真实模式待装依赖后复测） |
-| M2 OpenClaw 接入 | Agent 配置 + Adapter 改造 + `skill_wiring_test` 通过 | 2–3 天 |
-| M3 Orchestrator | FastAPI 7 个接口 + 参数确认流 | 2–3 天 |
-| M4 前端 | 对话标签页 + 队列监控 + 结果展示（先砍流程编排画布） | 3–5 天 |
-| M5 联调验收 | 端到端时序跑通 + 异常/干预路径验证 | 1–2 天 |
+| M2 OpenClaw 接入 | Agent 配置 + Adapter 改造 + `skill_wiring_test` 通过 | 2–3 天 ✅ **已完成**（47 单测 + 集成 + 安全全过，真实 Gateway RPC 链路 49s 跑通） |
+| M3 Orchestrator | FastAPI 8 接口 + 参数确认流 | 2–3 天 ✅ **已完成**（七步端到端验证通过，含 pause/resume/cancel/update 实测） |
+| M4 前端 | 对话标签页 + 队列监控 + 结果展示 + 系统状态（React 最小可看版） | 3–5 天 ✅ **已完成**（build 零错误，UI 冒烟 + 全链路经 proxy 验证） |
+| M5 联调验收 | 端到端时序跑通 + 异常/干预路径验证 | 1–2 天（部分已在 M3/M4 验证覆盖，待用户浏览器实机验收） |
 
 > 建议 MVP 裁剪：阶段一的"流程图编排画布"和阶段三的"分类分析"后置，先交付对话式全链路。
 
